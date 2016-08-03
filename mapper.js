@@ -203,9 +203,12 @@ $(function () {
             map.data.addListener('mouseover', function(event) {
                 map.data.revertStyle();
                 map.data.overrideStyle(event.feature, {strokeWeight: 2.0, fillColor: 'yellow'});
+                $("#mappopup").show();
+                $("#mappopup").html(event.feature.getProperty('options').html);
             });
             map.data.addListener('mouseout', function(event) {
                 map.data.revertStyle();
+                $("#mappopup").hide();
             });
         },
     });
