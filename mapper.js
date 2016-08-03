@@ -52,8 +52,9 @@ $(function () {
         _maxLng: null,
 
         // load data
-        _getData: function () {
-            var url;
+        _getData: function() {
+            var url,
+                self = this;
 
             if (this.options.data) {
                 // multiple items of one type
@@ -64,21 +65,17 @@ $(function () {
             }
 
             url = url + "?type=" + mapitTypes[this.options.dataType];
-            url = url + "&simplify_tolerance" + mapitSimplify[this.options.dataType];
+            url = url + "&simplify_tolerance=" + mapitSimplify[this.options.dataType];
             url = "https://mapit.code4sa.org" + url + "&generation=2";
 
-            var json = null;
             $.ajax({
-                'async': false,
                 'global': false,
                 'url': url,
                 'dataType': "json",
-                'success': function (data) {
-                    json = data;
-                }
+                'success': function(data) {
+                    self._draw(data);
+                },
             });
-            return json;
-
         },
 
         // get bound limits by looping through all points
@@ -147,8 +144,11 @@ $(function () {
             }
 
             // load the data
-            var data = this._getData();
 
+            this._getData();
+        },
+
+        _draw: function(data) {
             // prepare the list
             this._prepareList(data);
 
