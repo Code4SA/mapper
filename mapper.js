@@ -16,6 +16,20 @@ $(function () {
         'Northern Cape': 'NC',
     };
 
+    var mapitTypes = {
+        'provinces': 'PR',
+        'municipalities': 'MN',
+        'wards': 'WD',
+        'districts': 'DC',
+    };
+
+    var mapitSimplify = {
+        'provinces': '0.005',
+        'municipalities': '0.005',
+        'districts': '0.01',
+        'wards': '0.0001',
+    };
+
     $.widget("capesean.mapper", {
         // default options
         options: {
@@ -39,34 +53,18 @@ $(function () {
 
         // load data
         _getData: function () {
-
             var url;
-            switch (this.options.dataType) {
-                case "provinces":
-                    url = "/areas/PR.geojson?simplify_tolerance=0.005";
-                    break;
-                case "districts":
-                    url = "/areas/DC.geojson?simplify_tolerance=0.01";
-                    break;
-                case "municipalities":
-                    url = "/areas/MN.geojson?simplify_tolerance=0.005";
-                    break;
-                case "wards":
-                    // province filter not supplied
-                    if (!this.options.province)
-                        // error if not specifically requesting full wards file
-                        if (!this.options.allowAllWards)
-                            throw ("Error: Ward dataType requires either the province filter or the allowAllWards option enabled");
-                        else
-                            url = "/areas/WD.geojson";
-                    else {
-                        url = "/areas/MDB-levels:PR-" + provinceCodes[this.options.province] + "|WD.geojson?simplify_tolerance=0.0001";
-                    }
-                    break;
-                default:
-                    throw ("Error: Not Implemented dataType option in _getData: " + this.options.dataType);
+
+            if (this.options.data) {
+                // multiple items of one type
+                var codes = $.map(this.options.data, function(d) { return 'MDB:' + d.id; }).join(',');
+                url = "/areas/" + codes + ".geojson";
+            } else {
+                url = "/areas/" + mapitTypes[this.options.dataType] + ".geojson";
             }
 
+            url = url + "?type=" + mapitTypes[this.options.dataType];
+            url = url + "&simplify_tolerance" + mapitSimplify[this.options.dataType];
             url = "https://mapit.code4sa.org" + url + "&generation=2";
 
             var json = null;
