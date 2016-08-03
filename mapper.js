@@ -187,7 +187,7 @@ $(function () {
             map.fitBounds(bounds);
 
             // add event handlers
-            this._addEvents();
+            this._addEvents(map);
         },
 
         _addEvents: function(map) {
