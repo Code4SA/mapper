@@ -195,6 +195,15 @@ $(function () {
             $.each(events, function(event, func) {
                 map.data.addListener(event, func);
             });
+
+            // highlight boundaries on hover
+            map.data.addListener('mouseover', function(event) {
+                map.data.revertStyle();
+                map.data.overrideStyle(event.feature, {strokeWeight: 2.0, fillColor: 'yellow'});
+            });
+            map.data.addListener('mouseout', function(event) {
+                map.data.revertStyle();
+            });
         },
     });
 });
