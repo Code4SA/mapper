@@ -43,13 +43,13 @@ $(function () {
             var url;
             switch (this.options.dataType) {
                 case "provinces":
-                    url = "/areas/PR.geojson";
+                    url = "/areas/PR.geojson?simplify_tolerance=0.005";
                     break;
                 case "districts":
-                    url = "/areas/DC.geojson";
+                    url = "/areas/DC.geojson?simplify_tolerance=0.01";
                     break;
                 case "municipalities":
-                    url = "/areas/MN.geojson";
+                    url = "/areas/MN.geojson?simplify_tolerance=0.005";
                     break;
                 case "wards":
                     // province filter not supplied
@@ -60,14 +60,14 @@ $(function () {
                         else
                             url = "/areas/WD.geojson";
                     else {
-                        url = "/areas/MDB-levels:PR-" + provinceCodes(this.options.province) + "|WD.geojson";
+                        url = "/areas/MDB-levels:PR-" + provinceCodes[this.options.province] + "|WD.geojson?simplify_tolerance=0.0001";
                     }
                     break;
                 default:
                     throw ("Error: Not Implemented dataType option in _getData: " + this.options.dataType);
             }
 
-            url = "https://mapit.code4sa.org" + url + "?generation=2&simplify_tolerance=0.005";
+            url = "https://mapit.code4sa.org" + url + "&generation=2";
 
             var json = null;
             $.ajax({
@@ -175,6 +175,7 @@ $(function () {
                 };
             });
 
+            // draw the features
             var features = map.data.addGeoJson(data);
 
             // extend bounds to include all the features
@@ -184,7 +185,18 @@ $(function () {
 
             // zoom to fit the bounds
             map.fitBounds(bounds);
-        }
+
+            // add event handlers
+            this._addEvents();
+        },
+
+        _addEvents: function(map) {
+            var events = this.options.events || {};
+
+            $.each(events, function(event, func) {
+                map.data.addListener(event, func);
+            });
+        },
     });
 });
 
