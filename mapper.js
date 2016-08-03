@@ -64,7 +64,6 @@ $(function () {
                 url = "/areas/" + mapitTypes[this.options.dataType] + ".geojson";
             }
 
-            url = url + "?type=" + mapitTypes[this.options.dataType];
             url = url + "&simplify_tolerance=" + mapitSimplify[this.options.dataType];
             url = "https://mapit.code4sa.org" + url + "&generation=2";
 
