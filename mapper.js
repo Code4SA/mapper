@@ -178,7 +178,8 @@ $(function () {
 
             // extend bounds to include all the features
             for (var i = 0; i < features.length; i++) {
-                this._extendBounds(bounds, features[0].getGeometry());
+                features[i].getProperty('options').map = map;
+                this._extendBounds(bounds, features[i].getGeometry());
             }
 
             // zoom to fit the bounds
